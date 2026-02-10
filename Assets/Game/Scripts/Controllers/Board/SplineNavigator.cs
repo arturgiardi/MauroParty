@@ -2,10 +2,6 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Splines;
 
-#if UNITY_EDITOR
-#endif
-
-
 namespace Controller.Board
 {
     public class SplineNavigator : MonoBehaviour
@@ -17,10 +13,11 @@ namespace Controller.Board
 
         public void MoveToNextKnot(Vector3 targetKnotPosition)
         {
-            // 1. Tenta encontrar a spline que conecta a posição atual ao destino
+            // Try to find a spline path from the current position 
+            // to the target knot position
             if (TryGetSplinePath(transform.position, targetKnotPosition, out Spline spline, out float startT, out float endT))
             {
-                // Calcula a distância real na curva para determinar a duração
+                // Calculate the curve distance to determine the duration
                 float distance = CalculateDistanceBetweenPoints(spline, startT, endT);
                 float duration = distance / moveSpeed;
 
@@ -28,9 +25,9 @@ namespace Controller.Board
             }
             else
             {
+                // 2. Fallback: Straight line movement if no spline path is found
                 float distance = Vector3.Distance(transform.position, targetKnotPosition);
                 float duration = distance / moveSpeed;
-                // 2. Fallback: Movimento em linha reta caso não haja conexão por spline
                 MoveInStraightLine(targetKnotPosition, duration);
             }
         }
@@ -39,15 +36,14 @@ namespace Controller.Board
             float startT,
             float endT)
         {
-            // 1. Pegamos o comprimento TOTAL da spline usando a assinatura que você 
-            // confirmou
-            float totalLength = SplineUtility.CalculateLength(spline, 
+            // 1. Get the total length of the spline
+            float totalLength = SplineUtility.CalculateLength(spline,
                 splineContainer.transform.localToWorldMatrix);
-            
-            // 2. Calculamos a distância aproximada do trecho
-            // Em splines, a distância não é perfeitamente linear ao T, 
-            // mas para knots adjacentes, a proporção (delta T * total) é uma excelente 
-            // aproximação.
+
+            //2. Calculate the approximate distance between the two points on the spline
+            // In splines, the distance is not perfectly linear with T, 
+            // but for adjacent knots, the proportion (delta T * total) is an 
+            // excellent approximation.
             return Mathf.Abs(endT - startT) * totalLength;
         }
 
@@ -63,7 +59,8 @@ namespace Controller.Board
 
             foreach (var spline in splineContainer.Splines)
             {
-                // Verifica se esta spline contém knots próximos à posição atual e à de destino
+                // Verify if this spline contains knots close to the current position 
+                // and the target position
                 bool hasStart = TryGetTimeAtPosition(spline, currentPos, out float tStart);
                 bool hasEnd = TryGetTimeAtPosition(spline, targetPos, out float tEnd);
 
@@ -83,14 +80,15 @@ namespace Controller.Board
             out float time,
             float threshold = 0.1f)
         {
-            // Converte a posição global para o espaço local do Container
+            // Converts the global position to the local space of the Container
             Vector3 localPos = splineContainer.transform.InverseTransformPoint(position);
 
-            // SplineUtility.GetNearestPoint retorna a posição mais próxima e o 't' (0 a 1)
+            // SplineUtility.GetNearestPoint returns the nearest position and 
+            // the 't' (0 to 1)
             SplineUtility.GetNearestPoint(spline, localPos, out _, out time);
 
-            // Verifica se o ponto encontrado está realmente perto do knot 
-            // (dentro do threshold)
+            // Verify if the point found is actually close to the knot 
+            // (within the threshold)
             Vector3 pointOnSpline = (Vector3)spline.EvaluatePosition(time);
             return Vector3.Distance(pointOnSpline, localPos) < threshold;
         }
@@ -102,18 +100,19 @@ namespace Controller.Board
         {
             _currentMoveTween?.Kill();
 
-            // Criamos um valor genérico de 0 a 1 para o DoTween animar o progresso
+            // Create a generic value from 0 to 1 for DoTween to animate the progress
             float progress = 0;
             _currentMoveTween =
                 DOTween.To(() => progress, x => progress = x, 1f, duration)
                 .OnUpdate(() =>
                 {
-                    // Interpola entre o T inicial e o T final na spline selecionada
+                    // Interpolate between the start T and end T on the selected spline
                     float currentT = Mathf.Lerp(startT, endT, progress);
                     Vector3 localPos = (Vector3)spline.EvaluatePosition(currentT);
                     transform.position = splineContainer.transform.TransformPoint(localPos);
 
-                    // Opcional: Rotacionar para a direção do caminho
+                    // Rotates the object to face the direction of 
+                    // movement along the spline
                     Vector3 forward = (Vector3)spline.EvaluateTangent(currentT);
                     if (forward != Vector3.zero)
                         transform.forward = splineContainer.transform.TransformDirection(forward);
