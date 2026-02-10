@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Splines;
 
-#if UNITY_EDITOR
-#endif
 
 
-namespace Controller.Board
+
+namespace Game.Controller.Board
 {
     [RequireComponent(typeof(SplineContainer))]
     public class BoardController : MonoBehaviour

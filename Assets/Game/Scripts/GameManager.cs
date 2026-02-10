@@ -1,6 +1,6 @@
 using TutzEngine;
 
-namespace MarioPartyClone
+namespace Game
 {
     public class GameManager : BaseGameManager
     {

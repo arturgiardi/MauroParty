@@ -1,7 +1,7 @@
 using UnityEngine.Splines;
 
 
-namespace Controller.Board
+namespace Game.Controller.CustomSpline
 {
     [System.Serializable]
     public struct KnotObjectPair

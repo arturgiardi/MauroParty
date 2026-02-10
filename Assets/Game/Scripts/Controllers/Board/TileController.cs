@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using Game.Controller.CustomSpline;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Controller.Board
+namespace Game.Controller.Board
 {
     [RequireComponent(typeof(SplineNodeData))]
     public class TileController : MonoBehaviour

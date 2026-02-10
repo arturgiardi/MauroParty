@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Controller.Board
+namespace Game.Controller.Board
 {
     public abstract class BaseTileBodyController : MonoBehaviour
     {

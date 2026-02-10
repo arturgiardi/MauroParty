@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Controller.Board
+namespace Game.Controller.CustomSpline
 {
     public class SplineMovementController : MonoBehaviour
     {

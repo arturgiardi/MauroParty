@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 
 
-namespace Controller.Board
+namespace Game.Controller.CustomSpline
 {
     public class SplineNodeData : MonoBehaviour
     {

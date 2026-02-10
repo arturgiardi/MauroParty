@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 
 
-namespace Controller.Board
+namespace Game.Controller.CustomSpline
 {
     [ExecuteInEditMode]
     public class SplineKnotObjectInstantiator : MonoBehaviour, ISerializationCallbackReceiver

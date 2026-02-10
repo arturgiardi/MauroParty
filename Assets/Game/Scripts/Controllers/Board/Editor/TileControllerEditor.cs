@@ -3,7 +3,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-namespace Controller.Board
+namespace Game.Controller.Board
 {
     [CustomEditor(typeof(TileController))]
     public class TileControllerEditor : Editor
